@@ -1,19 +1,49 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { BrowserRouter as Router } from 'react-router-dom' ;
+import './index.css'
 import App from './App';
-import {BrowserRouter} from 'react-router-dom'
-// import reportWebVitals from './reportWebVitals';
 import 'semantic-ui-css/semantic.min.css'
 
+//REDUX 
+import {createStore} from 'redux'
+import {Provider} from 'react-redux'
+
+
+//this is a reducer (func. definition)
+  //the return value of our reducer BECOMES our global state
+
+let initialStateofNeighborhoodReducer = {
+  neighborhoods: []
+}
+
+let storeReducer = (state = initialStateofNeighborhoodReducer, action) => {
+  switch(action.type) {
+    case "SET_NEIGHBORHOODS_PLEASE":
+      let theInfoFromComponent = action.payload;
+      return {
+        ...state,
+        neighborhoods: theInfoFromComponent
+      }
+    default: 
+      return state
+  }
+ 
+} 
+
+let storeObj = createStore(
+  storeReducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  )
+
+
 ReactDOM.render(
-  // <BrowserRouter>
-    <App />, 
-  // </BrowserRouter>,
-  document.getElementById('root')
+  <Router>
+    <Provider store={storeObj}> 
+      <App />
+    </Provider>
+  </Router>,
+    document.getElementById('root')
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();
+
