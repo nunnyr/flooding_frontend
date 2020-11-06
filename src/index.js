@@ -6,18 +6,20 @@ import App from './App';
 import 'semantic-ui-css/semantic.min.css'
 
 //REDUX 
-import {createStore} from 'redux'
+import {createStore, combineReducers} from 'redux'
 import {Provider} from 'react-redux'
 
 
 //this is a reducer (func. definition)
   //the return value of our reducer BECOMES our global state
 
+//################ Neighborhood reducer #######################
 let initialStateofNeighborhoodReducer = {
-  neighborhoods: []
+  neighborhoods: [],
+  username: "",
 }
 
-let storeReducer = (state = initialStateofNeighborhoodReducer, action) => {
+let neighborhoodReducer = (state = initialStateofNeighborhoodReducer, action) => {
   switch(action.type) {
     case "SET_NEIGHBORHOODS_PLEASE":
       let theInfoFromComponent = action.payload;
@@ -31,8 +33,44 @@ let storeReducer = (state = initialStateofNeighborhoodReducer, action) => {
  
 } 
 
+//############ User reducer #################################
+
+let initialStateofUserReducer = {
+  username: "",
+  token: "",
+
+}
+
+
+let userReducer = (state = initialStateofUserReducer, action) => {
+  switch(action.type) {
+    case "SET_USER_INFO":
+      return {
+        //the return value becomes the state
+        
+        ...state,
+        username: action.payload.user.username,
+        token: action.payload.token
+      }
+    default: 
+      return state
+  }
+}
+
+//combineReducers takes in a POJO
+  //the keys become the highest level keyys of a global state
+  //the values are the reducers
+
+  let storingAll = {
+    neighborhoodInformation: neighborhoodReducer,
+    userInformation: userReducer
+  }
+
+  let rootReducer = combineReducers(storingAll)
+
+
 let storeObj = createStore(
-  storeReducer,
+  rootReducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   )
 

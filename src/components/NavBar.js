@@ -8,7 +8,8 @@ const NavBar = (props) => {
 
     return(
         <div>
-                <Segment basic inverted>
+            
+            <Segment basic inverted>
             <Header className="title" size='huge'>Flooding NYC App</Header>
             </Segment>
              <Sidebar.Pushable as={Segment}>
@@ -31,8 +32,8 @@ const NavBar = (props) => {
                     <NavLink to="/login">Login</NavLink>
                 </Menu.Item>
                 <Menu.Item >
-                    <Icon name='file' />
-                    <NavLink to="/register">Register</NavLink>
+                    <Icon name='search' />
+                    <NavLink to="/neighborhoods">Neighborhoods</NavLink>
                 </Menu.Item>
                 <Menu.Item>
                     <Icon name='user' />

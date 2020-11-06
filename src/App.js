@@ -1,12 +1,14 @@
 import React from 'react'
-import {Link, Switch, Route} from 'react-router-dom'
+import {Switch, Route} from 'react-router-dom'
 import './App.css';
 import Home from './components/Home'
 import {connect} from 'react-redux'
-// import LoginForm from './components/LoginForm'
+import LoginForm from './components/LoginForm'
+import Profile from './components/Profile'
 // import Map from './components/Map'
 import NavBar from './components/NavBar'
 import NeighborhoodContainer from './components/NeighborhoodContainer'
+import ShowFavorite from './components/ShowFavorite'
 import './index.css'
 // import { Container, Button} from 'semantic-ui-react'
 
@@ -42,54 +44,85 @@ class App extends React.Component {
         .then((neighborhoodsArray) => {
           this.props.setNeighborhoods(neighborhoodsArray)
         })
+
+    if(localStorage.token) {
+      fetch("http://localhost:3000/keep_logged_in", {
+        method: "GET" ,
+        headers: {
+          "Authorization": localStorage.token
+        }
+      })
+      .then(res => res.json())
+      .then(resp => {
+        if(resp.token) {
+          this.props.setUserInfo(resp)
+        }
+      })
+
+    }
     
   }
 
-  helpHandleResponse = (res) => {
-    // console.log("first res", res)
-    if(res.error){
-      console.error(res.error)
-    } else {
-      localStorage.token = res.token 
-      this.setState({
-        id: res.user.id,
-        username: res.user.username,
-        password: res.user.password,
-        avatar: res.user.avatar,
-        bio: res.user.bio,
-        city: res.user.city,
-        state: res.user.state,
-        zipcode: res.user.zipcode,
+  // helpHandleResponse = (res) => {
+  //   // console.log("first res", res)
+  //   if(res.error){
+  //     console.error(res.error)
+  //   } else {
+  //     localStorage.token = res.token 
+  //     this.setState({
+  //       id: res.user.id,
+  //       username: res.user.username,
+  //       password: res.user.password,
+  //       avatar: res.user.avatar,
+  //       bio: res.user.bio,
+  //       city: res.user.city,
+  //       state: res.user.state,
+  //       zipcode: res.user.zipcode,
     
        
-        token: res.token
-      })
-      this.props.history.push("/profile")
-    }
-  }
+  //       token: res.token
+  //     })
+  //     this.props.history.push("/profile")
+  //   }
+  // }
 
 
-  handleLoginSubmit = (userInfo) => {
-    // console.log("we are inside of the handle login submit", userInfo)
-    fetch("http://localhost:3000/users/login", {
-      method: "POST",
-      headers: {
-        "Content-type": "Application/json"
-      },
-      body: JSON.stringify({
-        username: userInfo.username,
-        password: userInfo.password
-      })
-    })
-    .then(res => res.json())
-    .then(this.helpHandleResponse)
-  }
+  // handleLoginSubmit = (userInfo) => {
+  //   // console.log("we are inside of the handle login submit", userInfo)
+  //   fetch("http://localhost:3000/users/login", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-type": "Application/json"
+  //     },
+  //     body: JSON.stringify({
+  //       username: userInfo.username,
+  //       password: userInfo.password
+  //     })
+  //   })
+  //   .then(res => res.json())
+  //   .then(this.helpHandleResponse)
+  // }
 
 
   renderNeighborhoodContainer = () => {
     return <NeighborhoodContainer/>
   }
 
+  renderProfile = () => {
+    return <Profile/>
+  }
+
+  showSingleFavorite = (routerProps) => {
+    let id = routerProps.match.params.id
+    let num_id = parseInt(id)
+    // let foundFavorite = this.props.allFavorites.find(neighborhood_id => neighborhood_id === num_id)
+    if(foundFavorite){
+      return <ShowFavorite {...routerProps} foundFavorite={foundFavorite}/>
+    } else {
+      return <p>404 page</p>
+    }
+
+  }
 
   render() {
     console.log(this.props, "APP");
@@ -106,11 +139,12 @@ class App extends React.Component {
         <Switch>
           <Route path="/" exact component={Home}></Route>
           <Route path="/neighborhoods" exact render={this.renderNeighborhoodContainer}></Route>
-          <Route path="/login" render={this.renderLoginForm}></Route>
+          <Route path="/login" component={LoginForm} render={this.renderLoginForm}></Route>
+          <Route path="/profile" render={this.renderProfile}></Route> 
+          <Route path="/neighborhoods/:id" exact render={this.showSingleFavorite}></Route> 
           <Route render={ () => <p>Page not Found</p>}></Route>
           {/* <Route path="/map" render={this.renderMap}></Route> */}
           {/* <Route path="/register" render={this.renderRegisterForm}></Route> */}
-          {/* <Route path="/profile" render={this.renderProfile}></Route>  */}
         </Switch>
 
       </div>
@@ -139,11 +173,26 @@ let setNeighborhoods = (array) => {
   }
 }
 
+let setUserInfo = (userInfo) => {
+  console.log("this is userInfo", userInfo)
+  return {
+    type: "SET_USER_INFO",
+    payload: userInfo
+  }
+}
+
 
 let mapDispatchToProps = {
-  setNeighborhoods: setNeighborhoods
+  setNeighborhoods: setNeighborhoods,
+  setUserInfo: setUserInfo
    
 }
 
+let mapStateToProps = (globalState) => {
+  return {
+    allFavorites: globalState.userInformation.neighborhood_id
+  }
+
+}
 
 export default connect(null, mapDispatchToProps)(App);

@@ -1,19 +1,37 @@
 import React from 'react';
-///any component that needs to get/set information from our global state needs the line below
 import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
+
 // import { FormTextArea } from 'semantic-ui-react';
 // import map 
 // import {NavLink} from 'react-router-dom'
-// import { Header, Icon, Menu, Segment, Sidebar} from 'semantic-ui-react'
+import { Card, Image, Button} from 'semantic-ui-react'
 
 class NeighborhoodContainer extends React.Component{
 
+
+    removeClick = () => {
+        console.log("Remove me")
+
+    }
+
     render(){
-        console.log(this.props.neighborhoods)
         let arrayOfNeighborhoods = this.props.neighborhoods.map(neighborhood => {
+            console.log("testing", neighborhood)
             
             // <img key={neighborhood.id} src={neighborhood.image}/>
-            return <li key={neighborhood.id}>{neighborhood.neighborhood_name} </li>
+            return (
+                <div>
+                    <Card>
+                     <Link to={`neighborhoods/${neighborhood.id}`}>{neighborhood.neighborhood_name}</Link>
+                     <Card.Header key={neighborhood.id}> </Card.Header>
+                      <Image src={neighborhood.image}></Image> 
+                     <Card.Description> {neighborhood.about} </Card.Description>
+                     <Button onClick={this.removeClick}>Remove</Button>
+                     </Card>
+            </div>
+            )
+           
         })
         return(
             <div>
@@ -34,7 +52,7 @@ class NeighborhoodContainer extends React.Component{
 
 let mapStateToProps = (globalState) => {
     return {
-        neighborhoods: globalState.neighborhoods
+        neighborhoods: globalState.neighborhoodInformation.neighborhoods
     }
     }
     
