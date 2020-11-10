@@ -4,6 +4,8 @@ import { BrowserRouter as Router } from 'react-router-dom' ;
 import './index.css'
 import App from './App';
 import 'semantic-ui-css/semantic.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 //REDUX 
 import {createStore, combineReducers} from 'redux'
@@ -37,6 +39,14 @@ let neighborhoodReducer = (state = initialStateofNeighborhoodReducer, action) =>
 
 let initialStateofUserReducer = {
   username: "",
+  id: "",
+  avatar: "",
+  bio: "",
+  city: "",
+  state: "",
+  zipcode: "",
+  favorites: [],
+  //point favorites to array
   token: "",
 
 }
@@ -49,9 +59,18 @@ let userReducer = (state = initialStateofUserReducer, action) => {
         //the return value becomes the state
         
         ...state,
-        username: action.payload.user.username,
+        // username: action.payload.user.username,
+        ...action.payload.user,
         token: action.payload.token
       }
+      case "SET_FAVORITE":
+        let copyOfFavorites = [...state.favorites, action.payload]
+      return {
+        ...state,
+        favorites: copyOfFavorites
+      }
+      // case "DELETE_FAVORITE":
+      //   let copyAllFavorites = [...state.favorites]
     default: 
       return state
   }

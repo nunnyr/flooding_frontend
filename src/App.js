@@ -8,7 +8,7 @@ import Profile from './components/Profile'
 // import Map from './components/Map'
 import NavBar from './components/NavBar'
 import NeighborhoodContainer from './components/NeighborhoodContainer'
-import ShowFavorite from './components/ShowFavorite'
+import FavoriteContainer from './components/FavoriteContainer'
 import './index.css'
 // import { Container, Button} from 'semantic-ui-react'
 
@@ -28,17 +28,7 @@ class App extends React.Component {
   }
 
   componentDidMount(){
-    // if(localStorage.token){
-    //   fetch("http://localhost:3000/users/keep_logged_in", {
-    //     method: "GET",
-    //     headers: {
-    //       "Authorization": localStorage.token
-    //     }
-    //   })
-    //   .then(res => res.json())
-    //   .then(this.helpHandleResponse) 
-
-    // }
+ 
     fetch("http://localhost:3000/neighborhoods")
         .then(res => res.json())
         .then((neighborhoodsArray) => {
@@ -55,6 +45,7 @@ class App extends React.Component {
       .then(res => res.json())
       .then(resp => {
         if(resp.token) {
+          // console.log("a response", resp)
           this.props.setUserInfo(resp)
         }
       })
@@ -63,45 +54,8 @@ class App extends React.Component {
     
   }
 
-  // helpHandleResponse = (res) => {
-  //   // console.log("first res", res)
-  //   if(res.error){
-  //     console.error(res.error)
-  //   } else {
-  //     localStorage.token = res.token 
-  //     this.setState({
-  //       id: res.user.id,
-  //       username: res.user.username,
-  //       password: res.user.password,
-  //       avatar: res.user.avatar,
-  //       bio: res.user.bio,
-  //       city: res.user.city,
-  //       state: res.user.state,
-  //       zipcode: res.user.zipcode,
-    
-       
-  //       token: res.token
-  //     })
-  //     this.props.history.push("/profile")
-  //   }
-  // }
 
 
-  // handleLoginSubmit = (userInfo) => {
-  //   // console.log("we are inside of the handle login submit", userInfo)
-  //   fetch("http://localhost:3000/users/login", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-type": "Application/json"
-  //     },
-  //     body: JSON.stringify({
-  //       username: userInfo.username,
-  //       password: userInfo.password
-  //     })
-  //   })
-  //   .then(res => res.json())
-  //   .then(this.helpHandleResponse)
-  // }
 
 
   renderNeighborhoodContainer = () => {
@@ -112,20 +66,20 @@ class App extends React.Component {
     return <Profile/>
   }
 
-  showSingleFavorite = (routerProps) => {
-    let id = routerProps.match.params.id
-    let num_id = parseInt(id)
-    // let foundFavorite = this.props.allFavorites.find(neighborhood_id => neighborhood_id === num_id)
-    if(foundFavorite){
-      return <ShowFavorite {...routerProps} foundFavorite={foundFavorite}/>
-    } else {
-      return <p>404 page</p>
-    }
+  // showSingleFavorite = (routerProps) => {
+  //   let id = routerProps.match.params.id
+  //   let num_id = parseInt(id)
+  //   // let foundFavorite = this.props.allFavorites.find(neighborhood_id => neighborhood_id === num_id)
+  //   if(foundFavorite){
+  //     return <Favorite {...routerProps} foundFavorite={foundFavorite}/>
+  //   } else {
+  //     return <p>404 page</p>
+  //   }
 
-  }
+  // }
 
   render() {
-    console.log(this.props, "APP");
+    console.log(this.state.token, "APP");
     return(
     <div >
         <NavBar token={this.state.token} handleLogout={this.handleLogout}/>
@@ -141,6 +95,7 @@ class App extends React.Component {
           <Route path="/neighborhoods" exact render={this.renderNeighborhoodContainer}></Route>
           <Route path="/login" component={LoginForm} render={this.renderLoginForm}></Route>
           <Route path="/profile" render={this.renderProfile}></Route> 
+          <Route path="/favorites" exact component={FavoriteContainer}></Route>
           <Route path="/neighborhoods/:id" exact render={this.showSingleFavorite}></Route> 
           <Route render={ () => <p>Page not Found</p>}></Route>
           {/* <Route path="/map" render={this.renderMap}></Route> */}
@@ -182,17 +137,25 @@ let setUserInfo = (userInfo) => {
 }
 
 
+// let setFavorite = (array) => {
+//   return {
+//     type: "SET_FAVORITE_NEIGHBORHOOD",
+//     payload: userInfo
+//   }
+// }
+
+
 let mapDispatchToProps = {
   setNeighborhoods: setNeighborhoods,
   setUserInfo: setUserInfo
    
 }
 
-let mapStateToProps = (globalState) => {
-  return {
-    allFavorites: globalState.userInformation.neighborhood_id
-  }
+// let mapStateToProps = (globalState) => {
+//   return {
+//     allFavorites: globalState.userInformation.neighborhood_id
+//   }
 
-}
+// }
 
 export default connect(null, mapDispatchToProps)(App);
