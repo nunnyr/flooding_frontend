@@ -69,8 +69,8 @@ let userReducer = (state = initialStateofUserReducer, action) => {
         ...state,
         favorites: copyOfFavorites
       }
-      // case "DELETE_FAVORITE":
-      //   let copyAllFavorites = [...state.favorites]
+      case "DELETE_FAVORITE":
+        let copyAllFavorites = [...state.favorites]
     default: 
       return state
   }

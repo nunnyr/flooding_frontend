@@ -1,5 +1,5 @@
 import React from 'react';
-// import map 
+
 import {NavLink} from 'react-router-dom'
 import { Header, Icon, Image, Menu, Segment, Sidebar} from 'semantic-ui-react'
 
@@ -10,7 +10,7 @@ const NavBar = (props) => {
         <div>
             
             <Segment basic inverted>
-            <Header className="title" size='huge'>Flooding NYC App</Header>
+            <Header className="title" size='huge'>Hurricane Sandy App</Header>
             </Segment>
              <Sidebar.Pushable as={Segment}>
                 <Sidebar
@@ -38,6 +38,10 @@ const NavBar = (props) => {
                 <Menu.Item>
                     <Icon name='user' />
                     <NavLink to="/profile">Profile</NavLink>
+                </Menu.Item>
+                <Menu.Item>
+                    <Icon name='map' />
+                    <NavLink to="/map">Map</NavLink>
                 </Menu.Item>
                 </Sidebar>
                 <Sidebar.Pusher>

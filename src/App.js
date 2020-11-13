@@ -5,7 +5,7 @@ import Home from './components/Home'
 import {connect} from 'react-redux'
 import LoginForm from './components/LoginForm'
 import Profile from './components/Profile'
-// import Map from './components/Map'
+import Map from './components/Map'
 import NavBar from './components/NavBar'
 import NeighborhoodContainer from './components/NeighborhoodContainer'
 import FavoriteContainer from './components/FavoriteContainer'
@@ -97,6 +97,7 @@ class App extends React.Component {
           <Route path="/profile" render={this.renderProfile}></Route> 
           <Route path="/favorites" exact component={FavoriteContainer}></Route>
           <Route path="/neighborhoods/:id" exact render={this.showSingleFavorite}></Route> 
+          <Route path="/map" exact component={Map}></Route>
           <Route render={ () => <p>Page not Found</p>}></Route>
           {/* <Route path="/map" render={this.renderMap}></Route> */}
           {/* <Route path="/register" render={this.renderRegisterForm}></Route> */}

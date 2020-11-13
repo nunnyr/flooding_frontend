@@ -5,34 +5,36 @@ import {Link} from 'react-router-dom'
 
 class Favorite extends React.Component{
 
+    deleteFavorites = (evt) => {
+        // evt.preventDefault()
+        console.log("favorites", this.props.favorites)
+        // console.log("token", this.props.token)
+        console.log("userInformation", localStorage.token)
+
+        fetch(`http://localhost:3000/favorites/${this.props.favoriteObject.id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": localStorage.token
+            },
+        })
+        .then(res => res.json())
+        .then((deletingFavorite) => {
+            console.log("in the body of the delete promise")
+            this.props.deleteFavorite(deletingFavorite)
+            
+        })
+        
+    }
 
 
     render() {
-
-        // console.log("displaying showFave", this.props.userInformation.favorites)
         let {favoriteObject} = this.props
-
         
-        // let arrayOfFavorites = this.props.userInformation.favorites.map(favorite => {
-        //     // console.log("testing", favorite)
-            
-            
-            // return (
-            //     <div>
-            //         <Card>
-            //          <Card.Header key={favoriteObject.id}> </Card.Header>
-            //           <Image src={favoriteObject.image}></Image> 
-            //          <Card.Description> {favoriteObject.about} </Card.Description>
-            //          {/* <Button onClick={this.removeClick}>Remove</Button> */}
-            //          </Card>
-            // </div>
-            // )
-           
+        
        
         return(
             <div>
-                {/* <h1>Neighborhoods</h1> */}
-               
                 <ul>
                     <div>
                      <Card>
@@ -40,8 +42,7 @@ class Favorite extends React.Component{
                       <Card.Header key={favoriteObject.id}>{favoriteObject.title} </Card.Header>
                        <Image src={favoriteObject.image}></Image>
                       <Card.Description> {favoriteObject.about} </Card.Description>
-                      <Button>Remove</Button>
-                      {/* <Button onClick={this.removeFavorite}>Remove Favorite</Button> */}
+                      <Button onClick={this.deleteFavorites}>Remove</Button>
                       
                       </Card>
                 </div>
@@ -51,7 +52,16 @@ class Favorite extends React.Component{
 }
 
 
+let deleteFavorite = (deleteFave) => {
+    return {
+        type: "DELETE_FAVORITE",
+        payload: deleteFave
+    }
+}
 
+let mapDispatchToProps = {
+    deleteFavorite: deleteFavorite
+}
 
 
 let mapStateToProps = (globalState) => {
@@ -59,4 +69,4 @@ let mapStateToProps = (globalState) => {
         neighborhoods: globalState.userInformation
     }
     }
-export default connect(mapStateToProps)(Favorite);
+export default connect(mapStateToProps, mapDispatchToProps)(Favorite);

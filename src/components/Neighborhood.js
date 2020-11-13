@@ -71,6 +71,8 @@ let deleteFavorite = (deleteFave) => {
     }
 }
 
+
+
 //mapDispatchToProps
 //connect(null, mapDispatchToProps)
 
